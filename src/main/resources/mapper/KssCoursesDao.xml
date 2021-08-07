@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lonely.alipay_demo.dao.KssCoursesDao">
+
+    <resultMap type="com.lonely.alipay_demo.entity.KssCourses" id="KssCoursesMap">
+        <result property="courseid" column="courseid" jdbcType="VARCHAR"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="intro" column="intro" jdbcType="VARCHAR"/>
+        <result property="img" column="img" jdbcType="VARCHAR"/>
+        <result property="price" column="price" jdbcType="NUMERIC"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="KssCoursesMap">
+        select courseid,
+               title,
+               intro,
+               img,
+               price,
+               status,
+               create_time,
+               update_time
+        from alipay.kss_courses
+        where courseid = #{courseid}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="KssCoursesMap">
+        select courseid,
+               title,
+               intro,
+               img,
+               price,
+               status,
+               create_time,
+               update_time
+        from alipay.kss_courses limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="KssCoursesMap">
+        select
+        courseid, title, intro, img, price, status, create_time, update_time
+        from alipay.kss_courses
+        <where>
+            <if test="courseid != null and courseid != ''">
+                and courseid = #{courseid}
+            </if>
+            <if test="title != null and title != ''">
+                and title = #{title}
+            </if>
+            <if test="intro != null and intro != ''">
+                and intro = #{intro}
+            </if>
+            <if test="img != null and img != ''">
+                and img = #{img}
+            </if>
+            <if test="price != null">
+                and price = #{price}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="courseid" useGeneratedKeys="true">
+        insert into alipay.kss_courses(title, intro, img, price, status, create_time, update_time)
+        values (#{title}, #{intro}, #{img}, #{price}, #{status}, #{createTime}, #{updateTime})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="courseid" useGeneratedKeys="true">
+        insert into alipay.kss_courses(title, intro, img, price, status, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.title}, #{entity.intro}, #{entity.img}, #{entity.price}, #{entity.status}, #{entity.createTime},
+            #{entity.updateTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="courseid" useGeneratedKeys="true">
+        insert into alipay.kss_courses(title, intro, img, price, status, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.title}, #{entity.intro}, #{entity.img}, #{entity.price}, #{entity.status}, #{entity.createTime},
+            #{entity.updateTime})
+        </foreach>
+        on duplicate key update
+        title = values(title) , intro = values(intro) , img = values(img) , price = values(price) , status =
+        values(status) , create_time = values(create_time) , update_time = values(update_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update alipay.kss_courses
+        <set>
+            <if test="title != null and title != ''">
+                title = #{title},
+            </if>
+            <if test="intro != null and intro != ''">
+                intro = #{intro},
+            </if>
+            <if test="img != null and img != ''">
+                img = #{img},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where courseid = #{courseid}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from alipay.kss_courses
+        where courseid = #{courseid}
+    </delete>
+
+</mapper>
+
